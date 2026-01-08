@@ -126,23 +126,3 @@ Valida si los códigos de equipos existen.
   "no_encontrados": ["EQ999"]
 }
 ```
-
-## 🐛 Solución de Problemas
-
-### Puerto 80 ocupado
-Modifica el puerto en `docker-compose.yml`:
-```yaml
-frontend:
-  ports:
-    - "8080:80"  # Cambia 8080 por el puerto que prefieras
-```
-
-### Reiniciar desde cero
-```bash
-docker-compose down -v
-.\inicio.bat
-```
-
-## 📄 Licencia
-
-MIT
