@@ -1,0 +1,61 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: leasein_backend
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - ./backend:/var/www/html
+    ports:
+      - "8000:8000"
+    networks:
+      - leasein-network
+    depends_on:
+      - db
+    environment:
+      - DB_CONNECTION=pgsql
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_DATABASE=leasein_db
+      - DB_USERNAME=leasein_user
+      - DB_PASSWORD=leasein_password
+    command: tail -f /dev/null
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: leasein_frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    networks:
+      - leasein-network
+    depends_on:
+      - backend
+
+  db:
+    image: postgres:15-alpine
+    container_name: leasein_postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=leasein_db
+      - POSTGRES_USER=leasein_user
+      - POSTGRES_PASSWORD=leasein_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - leasein-network
+
+networks:
+  leasein-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local
+
